@@ -360,3 +360,24 @@ func Locations(data []byte, k uint) []uint64 {
 
 	return locs
 }
+// Encode just encode bitset
+func (f *BloomFilter) Encode() ([]byte, error) {
+	var buf bytes.Buffer
+	_, err := f.b.WriteTo(&buf)
+	if err != nil {
+		return nil, err
+	}
+	return buf.Bytes(), nil
+}
+
+//Decode just decode bitset
+func (f *BloomFilter) Decode(data []byte) error {
+	buf := bytes.NewBuffer(data)
+	b := &bitset.BitSet{}
+	_, err := b.ReadFrom(buf)
+	if err != nil {
+		return err
+	}
+	f.b = b
+	return nil
+}
